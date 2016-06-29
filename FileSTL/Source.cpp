@@ -10,6 +10,7 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
+#include <boost/spirit/include/phoenix_object.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
 struct vec3
@@ -55,6 +56,8 @@ struct stl_ascii_parser : boost::spirit::qi::grammar<Iterator, solid(), boost::s
         namespace fusion = boost::fusion;
         namespace px = boost::phoenix;
         using namespace qi::labels;
+        using qi::on_error;
+        using qi::fail;
         startSolid %= qi::lit("solid") >> qi::lexeme[+(ascii::char_ - ascii::blank)];
 
         endSolid = qi::lit("endsolid") >> ascii::string(_r1);
@@ -72,9 +75,28 @@ struct stl_ascii_parser : boost::spirit::qi::grammar<Iterator, solid(), boost::s
                 >> vertices[px::insert(px::at_c<2>(_val), px::end(px::at_c<2>(_val)),px::begin(_1), px::end(_1))]
                 >> qi::lit("endloop")
                 )
+            >> qi::lit("endfacet")
             //end
             >> endSolid(px::at_c<0>(_val))
             ;
+
+        start.name("start");
+        startSolid.name("startSolid");
+        vector.name("vec3");
+        vertices.name("vertices");
+        endSolid.name("end_tag");
+
+        on_error<fail>
+            (
+                start
+                , std::cout
+                << px::val("Error! Expecting ")
+                << _4                               // what failed?
+                << px::val(" here: \"")
+                << px::construct<std::string>(_3, _2)   // iterators to error-pos, end
+                << px::val("\"")
+                << std::endl
+                );
     }
 
     boost::spirit::qi::rule<Iterator, solid(), boost::spirit::ascii::space_type> start;
@@ -116,6 +138,18 @@ struct stl_binary_parser : boost::spirit::qi::grammar<Iterator, solid()>
     boost::spirit::qi::rule<Iterator, void(std::string)> endSolid;
 };
 
+template <typename Iterator>
+struct stl_parser : boost::spirit::qi::grammar<Iterator, solid(), boost::spirit::ascii::space_type>
+{
+    stl_parser() : stl_parser::base_type(start)
+    {
+        start %= stl_ascii_ | boost::spirit::qi::lexeme[stl_binary_];
+    }
+    stl_ascii_parser<Iterator> stl_ascii_;
+    stl_binary_parser<Iterator> stl_binary_;
+    boost::spirit::qi::rule<Iterator, solid(), boost::spirit::ascii::space_type> start;
+};
+
 
 int main()
 {
@@ -128,9 +162,10 @@ int main()
         endloop\
         endfacet\
         endsolid Hi";
-    stl_ascii_parser<std::string::const_iterator> g;
-    solid output;
-    //boost::spirit::qi::phrase_parse(parsing.begin(), parsing.end(), g, boost::spirit::ascii::space, output);
+
+    stl_parser<std::string::const_iterator > b;
+    solid output, output2;
+    bool r1 = boost::spirit::qi::phrase_parse(parsing.begin(), parsing.end(), b, boost::spirit::ascii::space, output);
 
     std::ifstream f("C:\\Users\\Matthias\\Desktop\\ship.stl", std::ios::binary);
     std::string str;
@@ -140,8 +175,8 @@ int main()
     f.read(&str[0], str.size());
     f.close();
 
-    stl_binary_parser<std::string::const_iterator > b;
     
-    auto r = boost::spirit::qi::phrase_parse(str.begin(),str.end(), b, boost::spirit::ascii::space, output);
+    
+    bool r2 = boost::spirit::qi::phrase_parse(str.begin(),str.end(), b, boost::spirit::ascii::space, output2);
     system("Pause");
 }
