@@ -69,16 +69,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\libs\boost_1_61_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libs\glm;C:\libs\boost_1_62_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\boost_1_62_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\libs\boost_1_61_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libs\glm;C:\libs\boost_1_62_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\boost_1_62_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\libs\boost_1_61_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libs\glm;C:\libs\boost_1_62_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\boost_1_62_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\libs\boost_1_61_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libs\glm;C:\libs\boost_1_62_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\boost_1_62_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -128,6 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="boost_qvm_vec3.hpp" />
+    <ClInclude Include="vec3.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
