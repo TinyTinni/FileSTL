@@ -85,7 +85,7 @@ namespace tyti {
                 namespace px = boost::phoenix;
                 using namespace qi::labels;
 
-                startSolid %= qi::lit("solid") >> qi::lexeme[+(ascii::char_ - ascii::blank)];
+                startSolid %= qi::lit("solid") >> qi::lexeme[+(ascii::char_ - qi::eol)];
 
                 endSolid = qi::lit("endsolid") >> ascii::string(_r1);
 
@@ -96,11 +96,11 @@ namespace tyti {
 
                     >> *(qi::lit("facet") >> qi::lit("normal") >> vector[px::push_back(px::at_c<1>(_val), _1)]//normal
                         //vertices
-                        >> qi::lit("outer") >> qi::lit("loop")
+                        >> qi::lit("outer loop")
                         >> qi::repeat(3)[qi::lit("vertex") >> vector[px::push_back(px::at_c<2>(_val), _1)]]
                         >> qi::lit("endloop")
+                        >> qi::lit("endfacet")
                         )
-                    >> qi::lit("endfacet")
                     //end
                     >> endSolid(px::at_c<0>(_val))
                     ;
