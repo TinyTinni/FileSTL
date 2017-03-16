@@ -1,4 +1,3 @@
-﻿
 # STL File Reader and Writer
 Reads and writes STL files for 3D Geometry.
 
