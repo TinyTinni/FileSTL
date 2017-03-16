@@ -5,12 +5,8 @@ Reads and writes STL files for 3D Geometry.
 Header only
 
 ## Dependencies:
-    Boost.Spirit
-    Boost.Test (for tests)
-
-## todo
-- more tests
-- finish docu
+    [Boost.Spirit](http://www.boost.org/)
+    [Boost.Test (for tests)](http://www.boost.org/)
 
 ## Small and Fast Reference
 Use one of the read functions in namespace `tyti::stl`.
