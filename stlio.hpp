@@ -263,7 +263,7 @@ namespace tyti {
         template<typename T, typename streamT>
         void write_binary(streamT& out, const basic_solid<T>&s)
         {
-            header.resize(80);
+            s.header.resize(80);
             out.write(&s.header[0], 80);
 
             uint32_t num_triangles{ s.normals.size() };
