@@ -1,9 +1,9 @@
 #define BOOST_TEST_MODULE STL_IO
 
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 #include <boost/mpl/list.hpp>
 
-#include "stlio.hpp"
+#include "../stlio.hpp"
 
 using test_types = boost::mpl::list<float, double>;
 
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(read_ascii_from_string, T, test_types)
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(read_ascii_from_file, T, test_types)
 {
-    const std::string test_data{ std::string{ SOURCE_DIR } +"/testdata/cube_ascii.stl" };
+    const std::string test_data{  SOURCE_DIR "/testdata/cube_ascii.stl" };
 
     auto out = stl::read<T>(test_data);
     BOOST_TEST(out.second);
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(read_ascii_from_file, T, test_types)
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(read_binary_from_file, T, test_types)
 {
-    const std::string test_data{ std::string{ SOURCE_DIR } +"/testdata/cube_binary.stl" };
+    const std::string test_data{  SOURCE_DIR "/testdata/cube_binary.stl" };
 
     auto out = stl::read<T>(test_data);
     BOOST_TEST(out.second);
