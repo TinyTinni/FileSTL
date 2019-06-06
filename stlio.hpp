@@ -1,6 +1,6 @@
 //The MIT License(MIT)
 //
-//Copyright(c) 2016 Matthias Möller
+//Copyright(c) 2016 Matthias Mï¿½ller
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files(the "Software"), to deal
@@ -80,29 +80,29 @@ namespace tyti {
             stl_parser_ascii() : stl_parser_ascii::base_type(start)
             {
                 namespace qi = boost::spirit::qi;
+                namespace ql = qi::labels;
                 namespace ascii = boost::spirit::ascii;
                 namespace fusion = boost::fusion;
                 namespace px = boost::phoenix;
-                using namespace qi::labels;
 
                 startSolid %= qi::lit("solid") >> qi::lexeme[+(ascii::char_ - qi::eol)];
 
-                endSolid = qi::lit("endsolid") >> ascii::string(_r1);
+                endSolid = qi::lit("endsolid") >> ascii::string(ql::_r1);
 
                 vector %= qi::float_ >> qi::float_ >> qi::float_;
 
                 start =
-                    startSolid[px::at_c<0>(_val) = _1]
+                    startSolid[px::at_c<0>(ql::_val) = ql::_1]
 
-                    >> *(qi::lit("facet") >> qi::lit("normal") >> vector[px::push_back(px::at_c<1>(_val), _1)]//normal
+                    >> *(qi::lit("facet") >> qi::lit("normal") >> vector[px::push_back(px::at_c<1>(ql::_val), ql::_1)]//normal
                         //vertices
                         >> qi::lit("outer loop")
-                        >> qi::repeat(3)[qi::lit("vertex") >> vector[px::push_back(px::at_c<2>(_val), _1)]]
+                        >> qi::repeat(3)[qi::lit("vertex") >> vector[px::push_back(px::at_c<2>(ql::_val), ql::_1)]]
                         >> qi::lit("endloop")
                         >> qi::lit("endfacet")
                         )
                     //end
-                    >> endSolid(px::at_c<0>(_val))
+                    >> endSolid(px::at_c<0>(ql::_val))
                     ;
             }
 
@@ -120,20 +120,20 @@ namespace tyti {
             {
                 namespace spirit = boost::spirit;
                 namespace qi = boost::spirit::qi;
+                namespace ql = qi::labels;
                 namespace ascii = boost::spirit::ascii;
                 namespace px = boost::phoenix;
-                using namespace qi::labels;
 
                 vector %= spirit::little_bin_float >> spirit::little_bin_float >> spirit::little_bin_float;
 
                 start =
-                    qi::repeat(80)[spirit::byte_[px::at_c<0>(_val) += _1]]              //80x8-bit header
-                    >> spirit::little_dword[px::reserve(px::at_c<1>(_val), _1),
-                    px::reserve(px::at_c<2>(_val), 3 * _1),
-                    px::reserve(px::at_c<3>(_val), _1)]    //# of triangles
-                    >> *(vector[px::push_back(px::at_c<1>(_val), _1)]  //normal
-                        >> spirit::repeat(3)[vector[px::push_back(px::at_c<2>(_val), _1)]] //vertices
-                        >> spirit::little_word[px::push_back(px::at_c<3>(_val), _1)]  //attribute
+                    qi::repeat(80)[spirit::byte_[px::at_c<0>(ql::_val) += ql::_1]]              //80x8-bit header
+                    >> spirit::little_dword[px::reserve(px::at_c<1>(ql::_val), ql::_1),
+                    px::reserve(px::at_c<2>(ql::_val), 3 * ql::_1),
+                    px::reserve(px::at_c<3>(ql::_val), ql::_1)]    //# of triangles
+                    >> *(vector[px::push_back(px::at_c<1>(ql::_val), ql::_1)]  //normal
+                        >> spirit::repeat(3)[vector[px::push_back(px::at_c<2>(ql::_val), ql::_1)]] //vertices
+                        >> spirit::little_word[px::push_back(px::at_c<3>(ql::_val), ql::_1)]  //attribute
                         )
                     //end
                     ;
