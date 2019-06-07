@@ -48,6 +48,11 @@ namespace tyti {
             using scalar_type = T;
             static_assert(std::is_floating_point<scalar_type>::value, "T must be a floating point");
             T data[3];
+            basic_vec3():data{T(0),T(0),T(0)}{}
+            basic_vec3(T x, T y, T z):data{x,y,z}{}
+            
+            T operator[](size_t i)const {return data[i];}
+            const T &operator[](size_t i) { return data[i]; }
         };
 
         using dvec3 = basic_vec3<double>;
@@ -221,21 +226,21 @@ namespace tyti {
         {
             out << "solid " << s.header << "\n";
 
-            for (size_t i = 0; i < s.normals; ++i)
+            for (size_t i = 0; i < s.normals.size(); ++i)
             {
                 out << "\tfacet normal "
-                    << s.normals[i][0]
-                    << s.normals[i][1]
-                    << s.normals[i][2]
+                    << s.normals[i][0] << " "
+                    << s.normals[i][1] << " "
+                    << s.normals[i][2] << " "
                     << "\n";
 
                 out << "\t\touter loop\n";
-                for (int j : {0, 1, 2})
+                for (size_t j = 0; j < 3; ++j)
                 {
                     out << "\t\t\tvertex"
-                        << s.vertices[3 * i + j][0]
-                        << s.vertices[3 * i + j][1]
-                        << s.vertices[3 * i + j][2]
+                        << s.vertices[3 * i + j][0] << " "
+                        << s.vertices[3 * i + j][1] << " "
+                        << s.vertices[3 * i + j][2] << " "
                         << "\n";
                 }
                 out << "\t\tendloop\n"
@@ -249,42 +254,46 @@ namespace tyti {
             template<typename streamT>
             inline void write_vectorF32(streamT& out, const double* p)
             {
-                for (auto i : { 0,1,2 })
-                    out << (float)p[i];
+                for (size_t i = 0; i < 3; ++i)
+                {
+                    const float f = static_cast<float>(p[i]);
+                    out.write(reinterpret_cast<const char *>(p), sizeof(float));
+                }
             }
 
             template<typename streamT>
             inline void write_vectorF32(streamT& out, const float* p)
             {
-                out.write(p, sizeof(float) * 3);
+                out.write(reinterpret_cast<const char*>(p), sizeof(float) * 3);
             }
         }
 
         template<typename T, typename streamT>
-        void write_binary(streamT& out, const basic_solid<T>&s)
+        void write_binary(streamT& out, basic_solid<T>&s)
         {
             s.header.resize(80);
             out.write(&s.header[0], 80);
 
-            uint32_t num_triangles{ s.normals.size() };
+            const size_t num_triangles{ s.normals.size() };
             s.attributes.resize(num_triangles);
 
+            out.write(reinterpret_cast<const char*>(&num_triangles), 4);
+
             out << num_triangles;
-            for (uint32_t i = 0; i < num_triangles; ++i)
+            for (size_t i = 0; i < num_triangles; ++i)
             {
                 //we cannot do direct writ
-                detail::write_vectorF32(out, &s.normals[i]);
-                for (auto j : { 0,1,2 })
-                    detail::write_vectorF32(out, &s.vertices[3 * i + j]);
-                out.write(&s.attributes[i], sizeof(uint16_t));
+                detail::write_vectorF32(out, s.normals[i].data);
+                for (size_t j = 0; j < 3; ++j)
+                    detail::write_vectorF32(out, s.vertices[3 * i + j].data);
+                out.write(reinterpret_cast<const char*>(&s.attributes[i]), sizeof(uint16_t));
             }
         }
 
         template<typename T, typename streamT>
-        void write(streamT& out, const basic_solid<T>& s, bool binary)
+        void write(streamT& out, basic_solid<T>& s, bool binary)
         {
-            //assert(s.normals.size() != 3 * s.verticess.size());
-            s.normals.resize(3 * s.vertices.size());
+            s.vertices.resize(3 * s.normals.size());
 
             if (binary)
                 write_binary(out, s);

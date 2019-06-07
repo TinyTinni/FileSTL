@@ -26,11 +26,16 @@ inline std::pair< solid, bool > read(IterT begin, IterT end)
 //////////////////////////////////////////////////////////////
 // Writer Functions: (streamT is an output stream type)
 template<typename T, typename streamT>
-void write(streamT& out, const basic_solid<T>& s, bool binary)
+void write(streamT& out, basic_solid<T>& s, bool binary)
 template<typename T, typename streamT>
-void write_binary(streamT& out, const basic_solid<T>&s)
+void write_binary(streamT& out, basic_solid<T>&s)
 template<typename T, typename streamT>
-void write_ascii(streamT& out, const basic_solid<T>&s)
+void write_ascii(streamT& out, basic_solid<T>&s)
+
+// Remark: the solid parameter is not constant to ensure the correct size of the containers.
+// You may want to rewrite those functions corresponding on your error-checking presumptions
+
+// The write functions were just written as a proof of concept and you may want to avoid them
 
 //////////////////////////////////////////////////////////////
 // Output DataType:

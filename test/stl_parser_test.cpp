@@ -3,6 +3,8 @@
 #include <boost/test/included/unit_test.hpp>
 #include <boost/mpl/list.hpp>
 
+#include <sstream>
+
 #include "../stlio.hpp"
 
 using test_types = boost::mpl::list<float, double>;
@@ -56,4 +58,43 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(read_binary_from_file, T, test_types)
     BOOST_TEST(s.normals.size() == 12);
     BOOST_TEST(s.vertices.size() == 3 * 12);
     BOOST_TEST(s.attributes.size() == 12);
+}
+
+template<typename T>
+void simple_read_test(bool binary)
+{
+    using solid = stl::basic_solid<T>;
+    using vec3 = stl::basic_vec3<T>;
+
+    T n = T(1.0);
+    vec3 vec_n(n, n, n);
+
+    solid to_write;
+    to_write.header = "to_write_header";
+    to_write.vertices.push_back(vec_n);
+    to_write.vertices.push_back(vec_n);
+    to_write.vertices.push_back(vec_n);
+    to_write.normals.push_back(vec_n);
+
+    std::stringstream sstream;
+    stl::write(sstream, to_write, binary);
+
+     std::string str_w = sstream.str();
+     auto out = stl::read<T>(str_w.begin(), str_w.end());
+     BOOST_TEST(out.second);
+
+     solid cmp = out.first;
+     BOOST_TEST(to_write.header == cmp.header);
+     BOOST_TEST(to_write.vertices.size() == cmp.vertices.size());
+     BOOST_TEST(to_write.normals.size() == cmp.normals.size());
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(write_binary, T, test_types)
+{
+    simple_read_test<T>(true);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(write_ascii, T, test_types)
+{
+    simple_read_test<T>(false);
 }
