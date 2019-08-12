@@ -90,9 +90,9 @@ namespace tyti {
                 namespace fusion = boost::fusion;
                 namespace px = boost::phoenix;
 
-                startSolid %= qi::lit("solid") >> qi::lexeme[+(ascii::char_ - qi::eol)];
+                startSolid %= qi::lexeme[qi::lit("solid ") >> (+(ascii::char_ - qi::eol) | qi::attr(""))]; //either return header or empty string if no header was found 
 
-                endSolid = qi::lit("endsolid") >> ascii::string(ql::_r1);
+                endSolid = qi::lexeme[qi::lit("endsolid ") >> ascii::string(ql::_r1)];
 
                 vector %= qi::float_ >> qi::float_ >> qi::float_;
 
