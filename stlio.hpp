@@ -237,7 +237,7 @@ namespace tyti {
                 out << "\t\touter loop\n";
                 for (size_t j = 0; j < 3; ++j)
                 {
-                    out << "\t\t\tvertex"
+                    out << "\t\t\tvertex "
                         << s.vertices[3 * i + j][0] << " "
                         << s.vertices[3 * i + j][1] << " "
                         << s.vertices[3 * i + j][2] << " "
