@@ -279,7 +279,6 @@ namespace tyti {
 
             out.write(reinterpret_cast<const char*>(&num_triangles), 4);
 
-            out << num_triangles;
             for (size_t i = 0; i < num_triangles; ++i)
             {
                 //we cannot do direct writ
