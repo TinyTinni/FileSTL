@@ -16,21 +16,31 @@ Possible scalar values for the template `float, double`, default is `float`.
 ```c++
 //////////////////////////////////////////////////////////////
 // Reader Functions:
+
+//for super simple usage
+inline std::pair<solid, bool> read(const std::string& fileName);
+
+template<typename T>
+inline bool read(basic_solid<T>& out, const std::string& fileName);
+template<typename T>
+inline std::pair<basic_solid<T>, bool> read(const std::string& fileName);
+
 template<typename T, typename IterT>
-inline bool read(basic_solid<T>& out, IterT begin, IterT end)
+inline bool read(basic_solid<T>& out, IterT begin, IterT end);
 template<typename T, typename IterT>
-inline std::pair< basic_solid<T>, bool > read(IterT begin, IterT end)
+inline std::pair< basic_solid<T>, bool > read(IterT begin, IterT end);
 template<typename IterT>
-inline std::pair< solid, bool > read(IterT begin, IterT end)
+inline std::pair< solid, bool > read(IterT begin, IterT end);
+
 
 //////////////////////////////////////////////////////////////
 // Writer Functions: (streamT is an output stream type)
 template<typename T, typename streamT>
-void write(streamT& out, basic_solid<T>& s, bool binary)
+void write(streamT& out, basic_solid<T>& s, bool binary);
 template<typename T, typename streamT>
-void write_binary(streamT& out, basic_solid<T>&s)
+void write_binary(streamT& out, basic_solid<T>&s);
 template<typename T, typename streamT>
-void write_ascii(streamT& out, basic_solid<T>&s)
+void write_ascii(streamT& out, basic_solid<T>&s);
 
 // Remark: the solid parameter is not constant to ensure the correct size of the containers.
 // You may want to rewrite those functions corresponding on your error-checking presumptions
