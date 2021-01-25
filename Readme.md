@@ -61,7 +61,7 @@ struct basic_solid
 };
 
 typedef basic_solid<float> solid;
-typedef basic_solid<float> dsolid;
+typedef basic_solid<double> dsolid;
 
 template<typename T>
 struct basic_vec3
@@ -71,7 +71,7 @@ struct basic_vec3
 };
 
 typedef basic_vec3<float> vec3;
-typedef basic_vec3<float> dvec3;
+typedef basic_vec3<double> dvec3;
 ```
 
 
