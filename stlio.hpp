@@ -225,8 +225,10 @@ namespace tyti {
         void write_ascii(streamT& out, const basic_solid<T>&s)
         {
             out << "solid " << s.header << "\n";
+            
+            const size_t num_vertices = std::min(s.normals.size(), s.vertices.size()/3);
 
-            for (size_t i = 0; i < s.normals.size(); ++i)
+            for (size_t i = 0; i < num_vertices; ++i)
             {
                 out << "\tfacet normal "
                     << s.normals[i][0] << " "
@@ -254,13 +256,14 @@ namespace tyti {
             template<typename streamT>
             inline void write_vectorF32(streamT& out, const double* p)
             {
-                for (size_t i = 0; i < 3; ++i)
-                {
-                    const float f = static_cast<float>(p[i]);
-                    out.write(reinterpret_cast<const char *>(p), sizeof(float));
-                }
+                float f = static_cast<float>(p[0]);
+                out.write(reinterpret_cast<const char *>(p), sizeof(float));
+                f = static_cast<float>(p[1]);
+                out.write(reinterpret_cast<const char *>(p), sizeof(float));
+                f = static_cast<float>(p[2]);
+                out.write(reinterpret_cast<const char *>(p), sizeof(float));                
             }
-
+            
             template<typename streamT>
             inline void write_vectorF32(streamT& out, const float* p)
             {
@@ -269,13 +272,18 @@ namespace tyti {
         }
 
         template<typename T, typename streamT>
-        void write_binary(streamT& out, basic_solid<T>&s)
+        void write_binary(streamT& out, const basic_solid<T>& s)
         {
-            s.header.resize(80);
-            out.write(&s.header[0], 80);
+            // fill header buffer
+            const size_t HEADER_SIZE = 80;
+            char header_buffer[HEADER_SIZE];
+            const size_t to_write = std::min(s.header.size(), HEADER_SIZE);
+            std::copy(s.header.begin(), s.header.end(), header_buffer);
+            std::fill(header_buffer+to_write, header_buffer+HEADER_SIZE, char(0));
+            
+            out.write(header_buffer, 80);
 
-            const size_t num_triangles{ s.normals.size() };
-            s.attributes.resize(num_triangles);
+            const size_t num_triangles{ std::min(s.normals.size(), s.vertices.size()/3) };
 
             out.write(reinterpret_cast<const char*>(&num_triangles), 4);
 
@@ -283,16 +291,17 @@ namespace tyti {
             {
                 //we cannot do direct writ
                 detail::write_vectorF32(out, s.normals[i].data);
-                for (size_t j = 0; j < 3; ++j)
-                    detail::write_vectorF32(out, s.vertices[3 * i + j].data);
-                out.write(reinterpret_cast<const char*>(&s.attributes[i]), sizeof(uint16_t));
+                detail::write_vectorF32(out, s.vertices[3 * i + 0].data);
+                detail::write_vectorF32(out, s.vertices[3 * i + 1].data);
+                detail::write_vectorF32(out, s.vertices[3 * i + 2].data);
+                if (i < s.attributes.size())
+                    out.write(reinterpret_cast<const char*>(&s.attributes[i]), sizeof(uint16_t));
             }
         }
 
         template<typename T, typename streamT>
-        void write(streamT& out, basic_solid<T>& s, bool binary)
+        void write(streamT& out, const basic_solid<T>& s, bool binary)
         {
-            s.vertices.resize(3 * s.normals.size());
 
             if (binary)
                 write_binary(out, s);

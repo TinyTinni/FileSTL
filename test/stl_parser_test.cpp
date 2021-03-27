@@ -82,8 +82,16 @@ void simple_read_test(bool binary)
      auto out = stl::read<T>(str_w.begin(), str_w.end());
      BOOST_TEST(out.second);
 
-     solid cmp = out.first;
-     BOOST_TEST(to_write.header == cmp.header);
+     const solid& cmp = out.first;
+     if (binary)
+     {
+        std::string header_buffer(80, char(0));
+        BOOST_TEST(header_buffer == cmp.header);
+     }
+     else
+     {
+        BOOST_TEST(to_write.header == cmp.header);
+     }
      BOOST_TEST(to_write.vertices.size() == cmp.vertices.size());
      BOOST_TEST(to_write.normals.size() == cmp.normals.size());
 }
