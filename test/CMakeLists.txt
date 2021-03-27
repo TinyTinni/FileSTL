@@ -15,5 +15,5 @@ add_executable(${EXECUTABLE_NAME} ${SSU_Sources})
 
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
-add_definitions("-DSOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
+add_definitions("-DSOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
