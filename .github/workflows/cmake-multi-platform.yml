@@ -40,7 +40,7 @@ jobs:
     - name: Install boost
       run: |
         sudo apt-get -y update
-        sudo apt-get -y install libboost-dev
+        sudo apt-get -y install libboost-all-dev
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
