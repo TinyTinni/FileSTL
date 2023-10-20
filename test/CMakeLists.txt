@@ -12,7 +12,7 @@ add_executable(${EXECUTABLE_NAME} ${SSU_Sources})
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE Boost::unit_test_framework)
 
 include(CTest)
-add_test(${EXECUTABLE_NAME})
+add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 
 add_definitions("-DSOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
