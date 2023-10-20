@@ -11,5 +11,5 @@ target_link_libraries(std_parser_test PRIVATE Boost::unit_test_framework)
 
 add_test(NAME std_parser_test COMMAND std_parser_test)
 
-target_add_definitions(std_parser_test PRIVATE "-DSOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
+target_compile_definitions(std_parser_test PRIVATE "-DSOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
