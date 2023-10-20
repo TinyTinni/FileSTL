@@ -1,4 +1,5 @@
 # STL File Reader and Writer
+[![CMake](https://github.com/TinyTinni/FileSTL/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/TinyTinni/FileSTL/actions/workflows/cmake-multi-platform.yml)  
 Reads and writes STL files for 3D Geometry.
 
 ## Install
