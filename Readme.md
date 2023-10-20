@@ -1,5 +1,6 @@
 # STL File Reader and Writer
-[![CMake-build](https://github.com/TinyTinni/FileSTL/actions/workflows/cmake-build.yml/badge.svg)](https://github.com/TinyTinni/FileSTL/actions/workflows/cmake-build.yml)
+[![CMake](https://github.com/TinyTinni/FileSTL/actions/workflows/cmake-build.yml/badge.svg)](https://github.com/TinyTinni/FileSTL/actions/workflows/cmake-build.yml)
+
 Reads and writes STL files for 3D Geometry.
 
 ## Install
